@@ -10,6 +10,7 @@ public class UIProgressBar : UISprite
 	private float _value = 0;
 	private UISprite _bar;
 	private float _barOriginalWidth;
+	private float _barOriginalHeight;
 	private UIUVRect _barOriginalUVframe;
 	
 	
@@ -53,8 +54,28 @@ public class UIProgressBar : UISprite
 		_bar = bar;
 		_bar.parentUIObject = this;
 		
-		// Save the bars original size
 		_barOriginalWidth = _bar.width;
+		_barOriginalHeight = _bar.height;
+		
+		/*
+		// Save the bars original size
+		if (rotated)
+		{
+			_barOriginalWidth = _bar.width;
+			_barOriginalHeight = _bar.height;
+		}
+		else
+		{
+			_barOriginalWidth = _bar.width;
+			_barOriginalHeight = _bar.height;
+		}
+		*/
+		
+		/*if (!_rotated)
+					normalFrame = new Rect( clientTransform.position.x, -clientTransform.position.y, width * touchesScale.x, height * touchesScale.y);
+				else
+					normalFrame = new Rect( clientTransform.position.x, -clientTransform.position.y - (width * touchesScale.y), height * touchesScale.x, width * touchesScale.y);
+					*/
 		_barOriginalUVframe = _bar.uvFrame;
 		
 		manager.addSprite( this );
@@ -101,15 +122,45 @@ public class UIProgressBar : UISprite
 				{
 					// Set the uvFrame's width based on the value
 					UIUVRect newUVframe = _barOriginalUVframe;
-					newUVframe.uvDimensions.x *= _value;
+					
+					//check the rotation
+					if (_rotated)
+					{
+						newUVframe.uvDimensions.y *= _value;
+					}
+					else
+					{
+						newUVframe.uvDimensions.x *= _value;
+					}
+					
 					_bar.uvFrame = newUVframe;
 				}
 
 				// Update the bar size based on the value
 				if( rightToLeft )
-					_bar.setSize( _value * -_barOriginalWidth, _bar.height );	
+				{
+					//check the rotation
+					if (_rotated)
+					{
+						_bar.setSize( _value * -_barOriginalHeight, _bar.width );	
+					}
+					else
+					{
+						_bar.setSize( _value * -_barOriginalWidth, _bar.height );
+					}
+				}
 				else
-					_bar.setSize( _value * _barOriginalWidth, _bar.height );
+				{
+					//check the rotation
+					if (_rotated)
+					{
+						_bar.setSize( _bar.width, _value * _barOriginalHeight );
+					}
+					else
+					{
+						_bar.setSize( _value * _barOriginalWidth, _bar.width );
+					}
+				}
 			}
 		}
 	}
