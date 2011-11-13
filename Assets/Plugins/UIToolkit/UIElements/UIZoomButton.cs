@@ -52,11 +52,12 @@ public class UIZoomButton : UIButton
 		var highlightedTI = manager.textureInfoForFilename( highlightedFilename );
 		
 		// create the button
-		return new UIZoomButton( manager, frame, depth, normalTI.uvRect, highlightedTI.uvRect );
+		return new UIZoomButton( manager, frame, depth, normalTI.uvRect, highlightedTI.uvRect, normalTI.rotated );
 	}
 
-
-	public UIZoomButton( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UIUVRect highlightedUVframe ):base( manager, frame, depth, uvFrame, highlightedUVframe )
+	
+	
+	public UIZoomButton( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UIUVRect highlightedUVframe, bool rotated ):base( manager, frame, depth, uvFrame, highlightedUVframe, rotated )
 	{
 		centerize();
 		_zoomInAnimation = new UIAnimation( this, 0.3f, UIAnimationProperty.LocalScale, new Vector3( 1, 1, 1 ), new Vector3( 1.3f, 1.3f, 1.3f ), Easing.Quartic.easeInOut );

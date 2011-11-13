@@ -21,6 +21,9 @@ public class UISprite : UIObject, IPositionable
 
     public int index; // Index of this sprite in its SpriteManager's list
 	
+	public Vector2 touchesScale = Vector2.one; //scale for touches, the sprite can be scaled 1.5,1.5 but maybe we want the touches to be 1.0,1.0
+	public bool _rotated = false; //flag to store if this sprite was rotated in texture packer
+	
 	// Indices of the associated vertices in the actual mesh (shortcut to get straight to the right vertices in the vertex array)
 	// Also houses indices of UVs in the mesh and color values
 	public UIVertexIndices vertexIndices;
@@ -39,13 +42,20 @@ public class UISprite : UIObject, IPositionable
 	protected Dictionary<string, UISpriteAnimation> spriteAnimations;
 	
 	
-	public UISprite( Rect frame, int depth, UIUVRect uvFrame ) : this( frame, depth, uvFrame, false )
-	{}
+	public UISprite( Rect frame, int depth, UIUVRect uvFrame, bool rotated ):this( frame, depth, uvFrame, false, rotated )
+	{	
+	}
 	
 
-    public UISprite( Rect frame, int depth, UIUVRect uvFrame, bool gameObjectOriginInCenter ) : base()
+    public UISprite( Rect frame, int depth, UIUVRect uvFrame, bool gameObjectOriginInCenter, bool rotated ):base()
     {
 		this.gameObjectOriginInCenter = gameObjectOriginInCenter;
+		
+		//set the flag properly
+		_rotated = rotated;
+		
+		if (rotated)
+		client.transform.Rotate(0,0,90);
 		
 		// Setup our GO
 		client.transform.position = new Vector3( frame.x, -frame.y, depth ); // Depth will affect z-index

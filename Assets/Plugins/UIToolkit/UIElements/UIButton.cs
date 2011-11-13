@@ -35,12 +35,13 @@ public class UIButton : UITouchableSprite
 		// get the highlighted state
 		var highlightedTI = manager.textureInfoForFilename( highlightedFilename );
 		
+		
 		// create the button
-		return new UIButton( manager, frame, depth, normalTI.uvRect, highlightedTI.uvRect );
+		return new UIButton( manager, frame, depth, normalTI.uvRect, highlightedTI.uvRect, normalTI.rotated );
 	}
 
 
-	public UIButton( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UIUVRect highlightedUVframe ):base( frame, depth, uvFrame )
+	public UIButton( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UIUVRect highlightedUVframe, bool rotated ):base( frame, depth, uvFrame, rotated )
 	{
 		// If a highlighted frame has not yet been set use the normalUVframe
 		if( highlightedUVframe == UIUVRect.zero )
@@ -50,6 +51,7 @@ public class UIButton : UITouchableSprite
 		
 		manager.addTouchableSprite( this );
 	}
+	
 
 	#endregion;
 

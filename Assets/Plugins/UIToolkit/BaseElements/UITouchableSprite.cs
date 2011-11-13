@@ -22,16 +22,17 @@ public abstract class UITouchableSprite : UISprite, ITouchable, IComparable
 	protected bool _hoveredOver;
 #endif
 	
-	public UITouchableSprite( Rect frame, int depth, UIUVRect uvFrame ):base( frame, depth, uvFrame )
+	public UITouchableSprite( Rect frame, int depth, UIUVRect uvFrame, bool rotated ):base( frame, depth, uvFrame, rotated )
 	{
 		_tempUVframe = uvFrame;
 	}
 	
 	
 	// constructor for when the need to have a centered UISprite arises (I'm looking at you UIKnob)
-	public UITouchableSprite( Rect frame, int depth, UIUVRect uvFrame, bool gameObjectOriginInCenter ):base( frame, depth, uvFrame, gameObjectOriginInCenter )
+	public UITouchableSprite( Rect frame, int depth, UIUVRect uvFrame, bool gameObjectOriginInCenter, bool rotated ):base( frame, depth, uvFrame, gameObjectOriginInCenter, rotated )
 	{
 	}
+	
 	
 
 	#region Transform passthrough properties - we need to set the touchFrame dirty when these change
@@ -102,12 +103,18 @@ public abstract class UITouchableSprite : UISprite, ITouchable, IComparable
 				
 				// grab the normal frame of the sprite then add the offsets to get our touch frames
 				// remembering to offset if we have our origin in the center
-				var normalFrame = new Rect( clientTransform.position.x, -clientTransform.position.y, width, height );
+				Rect normalFrame;
+				
+				if (!_rotated)
+					normalFrame = new Rect( clientTransform.position.x, -clientTransform.position.y, width * touchesScale.x, height * touchesScale.y);
+				else
+					normalFrame = new Rect( clientTransform.position.x, -clientTransform.position.y - (width * touchesScale.y), height * touchesScale.x, width * touchesScale.y);
+				
 				
 				if( gameObjectOriginInCenter )
 				{
-					normalFrame.x -= width / 2;
-					normalFrame.y -= height / 2;
+					normalFrame.x -= (width * touchesScale.x) / 2;
+					normalFrame.y -= (height * touchesScale.y) / 2;
 				}
 
 				_normalTouchFrame = addOffsetsAndClipToScreen( normalFrame, _normalTouchOffsets );

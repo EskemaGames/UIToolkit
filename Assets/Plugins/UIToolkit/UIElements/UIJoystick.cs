@@ -25,6 +25,8 @@ struct UIBoundary
 
 public class UIJoystick : UITouchableSprite
 {
+	public bool restrictYaxis = false; //maybe we just want movement in a particular axis
+	public bool restrictXaxis = false; //maybe we just want movement in a particular axis
 	public Vector2 joystickPosition;
 	public Vector2 deadZone = Vector2.zero; // Controls when position output occurs
 	public bool normalize = true; // Normalize output after the dead-zone?  If true, we start at 0 even though the joystick is moved deadZone pixels already
@@ -34,8 +36,32 @@ public class UIJoystick : UITouchableSprite
 	private UISprite _backgroundSprite;
 	private Vector3 _joystickOffset;
 	private UIBoundary _joystickBoundary;
-	private float _maxJoystickMovement = 40.0f; // max distance from _joystickOffset that the joystick will move
+	private float _maxJoystickMovement = 60.0f; // max distance from _joystickOffset that the joystick will move
 	private UIToolkit _manager; // we need this for getting at texture details after the constructor
+	
+	public delegate void EventJoystickTouched();
+	public event EventJoystickTouched E_JoystickTouch;
+	public delegate void EventJoystickReleased();
+	public event EventJoystickReleased E_JoystickReleased;
+	
+	
+		//delegates
+	void JoystickTouch()
+	{
+		if (E_JoystickTouch != null)
+		{
+			E_JoystickTouch();
+		}
+	}
+	
+	void JoystickReleased()
+	{
+		if (E_JoystickReleased != null)
+		{
+			E_JoystickReleased();
+		}
+	}
+	
 	
 	
 	/// <summary>
@@ -72,7 +98,19 @@ public class UIJoystick : UITouchableSprite
 		// create the joystrick sprite
 		var joystick = manager.addSprite( joystickFilename, 0, 0, 1, true );
 		
-		return new UIJoystick( manager, hitAreaFrame, 1, joystick, xPos, yPos );
+		//check if HD is available or not
+		//using HD we should increase the hit area by 2, because the double pixel size 
+		//of the iphone4, also of course the xpos and ypos also should be updated as well
+		if (UI.instance.isHD)
+		{
+			Rect t = new Rect (hitAreaFrame.x, hitAreaFrame.y, hitAreaFrame.width * 2, hitAreaFrame.height * 2);
+			return new UIJoystick( manager, t, 1, joystick,  xPos * 2, yPos * 2);
+		}
+		else
+		{
+			return new UIJoystick( manager, hitAreaFrame, 1, joystick,  xPos, yPos );
+		}
+		
 	}
 
 	
@@ -142,22 +180,43 @@ public class UIJoystick : UITouchableSprite
 	{
 		// Clamp the new position based on the boundaries we have set.  Dont forget to reverse the Y axis!
 		Vector3 newPosition = Vector3.zero;
+		float X = 0;
+		float Y = 0;
 		
+
 		//adjust the touches with the scale
-		float X = localTouchPosition.x * _joystickSprite.localScale.x;
-		float Y = localTouchPosition.y * _joystickSprite.localScale.y;
+		X = localTouchPosition.x  * localScale.x;
+		Y = localTouchPosition.y  * localScale.y;
+
+		X += _joystickSprite.width * localScale.x;
+		Y += _joystickSprite.height * localScale.y;
+		
 		
 		//fixed to adjust the touches to the scale of the image
 		newPosition.x = Mathf.Clamp( localTouchPosition.x + X, _joystickBoundary.minX, _joystickBoundary.maxX );
 		newPosition.y = Mathf.Clamp( -(localTouchPosition.y + Y), _joystickBoundary.minY, _joystickBoundary.maxY );
+	
+		
+		if (restrictXaxis)
+		{
+			newPosition.x = Mathf.Clamp( _joystickOffset.x, _joystickBoundary.minX, _joystickBoundary.maxX );
+		}
+		
+		if (restrictYaxis)
+		{
+			newPosition.y = Mathf.Clamp( _joystickOffset.y, _joystickBoundary.minY, _joystickBoundary.maxY );
+		}
+	
+		
 		
 		// Set the new position and update the transform		
 		_joystickSprite.localPosition = newPosition;
 		
 		// Get a value between -1 and 1 for position
+		
 		joystickPosition.x = ( newPosition.x - _joystickOffset.x ) / _maxJoystickMovement;
 		joystickPosition.y = ( newPosition.y - _joystickOffset.y ) / _maxJoystickMovement;
-		
+	
 		// Adjust for dead zone	
 		float absoluteX = Mathf.Abs( joystickPosition.x );
 		float absoluteY = Mathf.Abs( joystickPosition.y );
@@ -173,6 +232,7 @@ public class UIJoystick : UITouchableSprite
 			joystickPosition.x = Mathf.Sign( joystickPosition.x ) * ( absoluteX - deadZone.x ) / ( 1 - deadZone.x );
 		}
 		
+		
 		if( absoluteY < deadZone.y )
 		{
 			// Report the joystick as being at the center if it is within the dead zone
@@ -186,12 +246,15 @@ public class UIJoystick : UITouchableSprite
 	}
 	
 
-#if UNITY_EDITOR || UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_WEBPLAYER
+	
+	
+	#if UNITY_EDITOR || UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_WEBPLAYER
 	public override void onTouchBegan( UIFakeTouch touch, Vector2 touchPos )
 #else
 	public override void onTouchBegan( Touch touch, Vector2 touchPos )
 #endif
 	{
+		JoystickTouch();
 		highlighted = true;
 		
 		this.layoutJoystick( this.inverseTranformPoint( touchPos ) );
@@ -208,6 +271,7 @@ public class UIJoystick : UITouchableSprite
 	public override void onTouchMoved( Touch touch, Vector2 touchPos )
 #endif
 	{
+		JoystickTouch();
 		this.layoutJoystick( this.inverseTranformPoint( touchPos ) );
 	}
 	
@@ -218,12 +282,16 @@ public class UIJoystick : UITouchableSprite
 	public override void onTouchEnded( Touch touch, Vector2 touchPos, bool touchWasInsideTouchFrame )
 #endif
 	{
+		JoystickReleased();
+		
 		// Set highlighted to avoid calling super
 		highlighted = false;
 		
 		// Reset back to default state
 		this.resetJoystick();
 	}
+
+
 	
 }
 

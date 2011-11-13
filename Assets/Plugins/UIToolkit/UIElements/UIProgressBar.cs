@@ -36,18 +36,18 @@ public class UIProgressBar : UISprite
 		UISprite bar;
 		
 		if( rightToLeft )
-			bar = manager.addSprite( barFilename, borderxPos - barxPos + ((int)borderTI.frame.width), borderyPos + baryPos, 2 );
+			bar = manager.addSprite( barFilename, borderxPos - barxPos + ((int)borderTI.frame.width), borderyPos + baryPos, 1 );
 		else
-			bar = manager.addSprite( barFilename, borderxPos + barxPos, borderyPos + baryPos, 2 );
+			bar = manager.addSprite( barFilename, borderxPos + barxPos, borderyPos + baryPos, 1 );
 
-		var progressBar = new UIProgressBar( manager, borderFrame, 1, borderTI.uvRect, bar );
+		var progressBar = new UIProgressBar( manager, borderFrame, 1, borderTI.uvRect, bar, borderTI.rotated );
 		progressBar.rightToLeft = rightToLeft;
 		
 		return progressBar;
 	}
 	
 	
-	public UIProgressBar( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UISprite bar ):base( frame, depth, uvFrame )
+	public UIProgressBar( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UISprite bar, bool rotated ):base( frame, depth, uvFrame, rotated )
 	{
 		// Save the bar and make it a child of the container/border for organization purposes
 		_bar = bar;

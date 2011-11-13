@@ -33,11 +33,11 @@ public class UIToggleButton : UITouchableSprite
 		var selectedTI = manager.textureInfoForFilename( selectedFilename );
 		var highlightedTI = manager.textureInfoForFilename( highlightedFilename );
 		
-		return new UIToggleButton( manager, frame, depth, textureInfo.uvRect, selectedTI.uvRect, highlightedTI.uvRect );
+		return new UIToggleButton( manager, frame, 1, textureInfo.uvRect, selectedTI.uvRect, highlightedTI.uvRect, selectedTI.rotated );
 	}
 	
 	
-	public UIToggleButton( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UIUVRect selectedUVframe, UIUVRect highlightedUVframe ):base( frame, depth, uvFrame )
+	public UIToggleButton( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UIUVRect selectedUVframe, UIUVRect highlightedUVframe, bool rotated ):base( frame, depth, uvFrame, rotated )
 	{
 		this.selectedUVframe = selectedUVframe;
 		

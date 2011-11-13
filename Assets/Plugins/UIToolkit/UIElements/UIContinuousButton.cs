@@ -23,7 +23,6 @@ public class UIContinuousButton : UIButton
 		return create( manager, filename, highlightedFilename, xPos, yPos, 1 );
 	}
 	
-	
 	public static new UIContinuousButton create( UIToolkit manager, string filename, string highlightedFilename, int xPos, int yPos, int depth )
 	{
 		// grab the texture details for the normal state
@@ -34,13 +33,14 @@ public class UIContinuousButton : UIButton
 		var highlightedTI = manager.textureInfoForFilename( highlightedFilename );
 		
 		// create the button
-		return new UIContinuousButton( manager, frame, depth, normalTI.uvRect, highlightedTI.uvRect );
+		return new UIContinuousButton( manager, frame, depth, normalTI.uvRect, highlightedTI.uvRect, normalTI.rotated );
 	}
 
 
-	public UIContinuousButton( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UIUVRect highlightedUVframe ):base( manager, frame, depth, uvFrame, highlightedUVframe )
+	public UIContinuousButton( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UIUVRect highlightedUVframe, bool rotated ):base( manager, frame, depth, uvFrame, highlightedUVframe, rotated )
 	{
 	}
+	
 
 
 	// Touch handlers

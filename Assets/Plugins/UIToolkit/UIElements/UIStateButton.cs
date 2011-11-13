@@ -62,7 +62,7 @@ public class UIStateButton : UIButton
 			manager.textureInfoForFilename( highlightedFilenames[0] );
 		}
 		
-		var button = new UIStateButton( manager, frame, depth, firstNormalTI.uvRect, firstHighlightedTI.uvRect );
+		var button = new UIStateButton( manager, frame, depth, firstNormalTI.uvRect, firstHighlightedTI.uvRect, firstNormalTI.rotated );
 
 		button.addFrames(filenames, highlightedFilenames);
 		
@@ -70,7 +70,7 @@ public class UIStateButton : UIButton
 	}
 	
 	
-	public UIStateButton( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UIUVRect highlightedUVframe ):base( manager, frame, depth, uvFrame, highlightedUVframe )
+	public UIStateButton( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UIUVRect highlightedUVframe, bool rotated ):base( manager, frame, depth, uvFrame, highlightedUVframe, rotated )
 	{
 	}
 

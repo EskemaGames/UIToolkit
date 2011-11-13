@@ -40,11 +40,11 @@ public class UISlider : UITouchableSprite
 		// create a knob using our cacluated position
 		var knob = manager.addSprite( knobFilename, trackxPos, trackyPos, 1, true );
 		
-		return new UISlider( manager, trackFrame, 2, trackTI.uvRect, knob, layout );
+		return new UISlider( manager, trackFrame, 2, trackTI.uvRect, knob, layout, trackTI.rotated );
 	}
 	
 
-	public UISlider( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UISprite sliderKnob, UISliderLayout layout ):base( frame, depth, uvFrame )
+	public UISlider( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, UISprite sliderKnob, UISliderLayout layout, bool rotated ):base( frame, depth, uvFrame, rotated )
 	{
 		this.layout = layout;
 		
@@ -57,6 +57,7 @@ public class UISlider : UITouchableSprite
 		
 		manager.addTouchableSprite( this );
 	}
+	
 
 	// Removes the sprite from the mesh and destroys it's client GO
 	public override void destroy()
