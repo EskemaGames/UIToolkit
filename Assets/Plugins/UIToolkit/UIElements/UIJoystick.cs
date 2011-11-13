@@ -114,7 +114,7 @@ public class UIJoystick : UITouchableSprite
 	}
 
 	
-	public UIJoystick( UIToolkit manager, Rect frame, int depth, UISprite joystickSprite, float xPos, float yPos ):base( frame, depth, UIUVRect.zero )
+	public UIJoystick( UIToolkit manager, Rect frame, int depth, UISprite joystickSprite, float xPos, float yPos ):base( frame, depth, UIUVRect.zero, false )
 	{
 		// Save out the uvFrame for the sprite so we can highlight
 		_tempUVframe = joystickSprite.uvFrame;
