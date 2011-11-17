@@ -31,7 +31,7 @@ public class UIColorPicker : UITouchableSprite
 	}
 
 
-	public UIColorPicker( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, Vector2 textureCoords ):base( frame, depth, uvFrame )
+	public UIColorPicker( UIToolkit manager, Rect frame, int depth, UIUVRect uvFrame, Vector2 textureCoords ):base( frame, depth, uvFrame, false )
 	{
 		//We store the coordinates of the top left of the subtexture
 		this.textureCoords = textureCoords;

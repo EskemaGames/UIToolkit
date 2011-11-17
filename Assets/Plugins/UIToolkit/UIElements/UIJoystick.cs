@@ -183,19 +183,20 @@ public class UIJoystick : UITouchableSprite
 		float X = 0;
 		float Y = 0;
 		
-
-		//adjust the touches with the scale
-		X = localTouchPosition.x  * localScale.x;
-		Y = localTouchPosition.y  * localScale.y;
-
-		X += _joystickSprite.width * localScale.x;
-		Y += _joystickSprite.height * localScale.y;
 		
+		//adjust the touches with the scale
+		X = localTouchPosition.x;
+		Y = localTouchPosition.y;
+	
+		X += (_joystickSprite.width * 0.5f) * localScale.x;
+		Y += (_joystickSprite.height * 0.5f) * localScale.y;
+	
 		
 		//fixed to adjust the touches to the scale of the image
-		newPosition.x = Mathf.Clamp( localTouchPosition.x + X, _joystickBoundary.minX, _joystickBoundary.maxX );
-		newPosition.y = Mathf.Clamp( -(localTouchPosition.y + Y), _joystickBoundary.minY, _joystickBoundary.maxY );
-	
+		newPosition.x = Mathf.Clamp( X, _joystickBoundary.minX, _joystickBoundary.maxX );
+		newPosition.y = Mathf.Clamp( -(Y), _joystickBoundary.minY, _joystickBoundary.maxY );
+		
+		
 		
 		if (restrictXaxis)
 		{
